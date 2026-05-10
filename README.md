@@ -4,13 +4,6 @@
 
 Three working AI systems that implement production-grade agentic design patterns: self-reflection loops, tool-augmented reasoning, and multi-agent coordination. Built end-to-end in Python using the OpenAI function-calling API and live external data sources.
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?logo=openai&logoColor=white)
-![arXiv](https://img.shields.io/badge/arXiv-API-b31b1b)
-![Tavily](https://img.shields.io/badge/Tavily-Search-orange)
-![Wikipedia](https://img.shields.io/badge/Wikipedia-API-grey?logo=wikipedia)
-![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?logo=jupyter&logoColor=white)
-
 ---
 
 ## Projects
