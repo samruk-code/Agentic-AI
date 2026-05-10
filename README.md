@@ -1,72 +1,105 @@
-# Agentic AI — DeepLearning.AI
+# Agentic AI — Production Patterns in Python
 
-Completed coursework from **[Agentic AI with Andrew Ng](https://www.deeplearning.ai/courses/agentic-ai/)** (DeepLearning.AI). The course covers production-ready agentic design patterns and builds toward a fully autonomous multi-agent research system.
+![Agentic AI](Agentic-AI.png)
 
----
+Three working AI systems that implement production-grade agentic design patterns: self-reflection loops, tool-augmented reasoning, and multi-agent coordination. Built end-to-end in Python using the OpenAI function-calling API and live external data sources.
 
-## What I Learned
-
-| Pattern | Description |
-|---|---|
-| **Reflection** | LLMs that critique and iteratively improve their own outputs |
-| **Tool Use** | Integrating external APIs (web search, academic databases) via function calling |
-| **Planning** | Decomposing complex tasks into executable, adaptable steps |
-| **Multi-Agent Systems** | Coordinating specialized agents (planner, researcher, editor) in a pipeline |
+![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?logo=openai&logoColor=white)
+![arXiv](https://img.shields.io/badge/arXiv-API-b31b1b)
+![Tavily](https://img.shields.io/badge/Tavily-Search-orange)
+![Wikipedia](https://img.shields.io/badge/Wikipedia-API-grey?logo=wikipedia)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?logo=jupyter&logoColor=white)
 
 ---
 
-## Assignments
+## Projects
 
-### Module 2 — Reflection Pattern
+### 1. Reflection Loop — Self-Improving Essay Writer
 **[`M2 Assignment/C1M2_Assignment.ipynb`](M2%20Assignment/C1M2_Assignment.ipynb)**
 
-Built a three-step agentic workflow that simulates reflective thinking:
-1. **Draft** — LLM generates an initial essay based on a topic prompt
-2. **Reflect** — a separate reasoning step critiques the draft for quality and coherence
-3. **Revise** — the LLM rewrites the essay by applying the critique
+An LLM that critiques and rewrites its own output in a closed loop — the core building block behind iterative agents.
 
-**Key tools & libraries:** `aisuite`, `openai:gpt-4o`, `python-dotenv`
+| Step | What happens |
+|---|---|
+| Draft | Model generates an initial essay from a topic prompt |
+| Reflect | A separate reasoning pass critiques structure, coherence, and gaps |
+| Revise | Model rewrites using the critique as a feedback signal |
+
+The interesting engineering challenge here is designing the reflection prompt so it produces *actionable* critique rather than generic feedback — the quality of revision is entirely determined by the specificity of the reflection step.
+
+**Stack:** `aisuite`, `openai:gpt-4o`, `python-dotenv`
 
 ---
 
-### Module 3 — Tool Use & Reflective Agents
+### 2. Tool-Augmented Research Agent
 **[`M3 Assignment/C1M3_Assignment.ipynb`](M3%20Assignment/C1M3_Assignment.ipynb)**
 
-Built a research agent that chains external tool calls with self-reflection to produce a structured HTML report:
-- Integrated **arXiv** (academic paper search) and **Tavily** (web search) as callable tools
-- Wired tools to an LLM via **OpenAI's function-calling API**
-- Added a reflection step to critique and improve the generated report
-- Rendered the final output as styled HTML
+A research agent that decides *when* to call external tools, executes them, then reflects on the gathered information to produce a structured HTML report.
 
-**Key tools & libraries:** `openai` (tool-calling API), `arxiv`, `tavily`, `IPython.display`
+- Wired **arXiv** and **Tavily** as callable tools via OpenAI's function-calling API
+- The agent autonomously decides which tool to use and how to query it based on the research question
+- A reflection step critiques the draft report and drives a second revision pass
+- Final output rendered as a styled, human-readable HTML report
+
+The key design decision was keeping tool definitions narrow and typed — broad tool signatures caused the model to hallucinate arguments. Tight schemas eliminated that failure mode entirely.
+
+**Stack:** `openai` (tool-calling API), `arxiv`, `tavily`, `IPython.display`
 
 ---
 
-### Module 5 — Planning & Multi-Agent Workflows
+### 3. Multi-Agent Research System
 **[`M5 Assignment/C1M5_Assignment.ipynb`](M5%20Assignment/C1M5_Assignment.ipynb)**
 
-Built a full multi-agent research system with three specialized agents:
-- **Planning Agent / Writer** — creates an outline and coordinates the overall workflow
-- **Research Agent** — gathers external information using arXiv, Tavily, and Wikipedia tools
-- **Editor Agent** — reflects on the draft report and provides improvement feedback
+A fully coordinated pipeline of three specialized agents that collaborate to produce a research report — each with a distinct role and access to different tools.
 
-**Key tools & libraries:** `aisuite`, `arxiv`, `tavily`, `wikipedia`, `python-dotenv`
+```
+Planning Agent (Writer)
+    │── decomposes the topic, creates outline, writes final report
+    │
+Research Agent
+    │── queries arXiv, Tavily, and Wikipedia in parallel
+    │── returns structured results back to the planner
+    │
+Editor Agent
+    └── reflects on the draft, returns structured improvement feedback
+```
+
+The non-trivial part was designing agent handoffs — each agent receives only the context it needs, not the full conversation history. This keeps token usage predictable and prevents earlier agents from polluting later reasoning.
+
+**Stack:** `aisuite`, `arxiv`, `tavily`, `wikipedia`, `python-dotenv`
 
 ---
 
 ## Skills Demonstrated
 
-- Designing and implementing agentic pipelines in Python
+- Agentic pipeline design: reflection loops, tool use, multi-agent coordination
+- OpenAI function-calling API — tool schema design, argument validation, error handling
 - Prompt engineering for multi-step LLM workflows
-- OpenAI and `aisuite` API usage (chat completions, function/tool calling)
-- Integrating real-world data sources: arXiv, Tavily, Wikipedia
-- Evaluation and iterative refinement via reflection loops
-- Multi-agent coordination and role decomposition
+- Integrating live external APIs: arXiv, Tavily, Wikipedia
+- Role decomposition and context management in multi-agent systems
 
 ---
 
-## Course Info
+## Run It Yourself
 
-- **Instructor:** Andrew Ng (DeepLearning.AI)
-- **Level:** Intermediate
-- **Platform:** [DeepLearning.AI](https://www.deeplearning.ai/courses/agentic-ai/)
+```bash
+git clone https://github.com/samruk-code/Agentic-AI.git
+cd Agentic-AI
+pip install aisuite openai arxiv tavily wikipedia python-dotenv
+```
+
+Create a `.env` file with your API keys:
+
+```
+OPENAI_API_KEY=your_key_here
+TAVILY_API_KEY=your_key_here
+```
+
+Then open any notebook in Jupyter and run all cells.
+
+---
+
+## Course
+
+Built as part of **[Agentic AI with Andrew Ng](https://www.deeplearning.ai/courses/agentic-ai/)** (DeepLearning.AI) — an intermediate course on production agentic design patterns.
