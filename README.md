@@ -91,7 +91,7 @@ TAVILY_API_KEY=your_key_here
 
 Then open any notebook in Jupyter and run all cells.
 
----
+----
 
 ## Course
 
