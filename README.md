@@ -44,21 +44,32 @@ The key design decision was keeping tool definitions narrow and typed — broad 
 ### 3. Multi-Agent Research System
 **[`M5 Assignment/C1M5_Assignment.ipynb`](M5%20Assignment/C1M5_Assignment.ipynb)**
 
-A fully coordinated pipeline of three specialized agents that collaborate to produce a research report — each with a distinct role and access to different tools.
+A coordinated pipeline of specialized agents — each with a distinct role and a narrow toolset — driven by an orchestrator that routes work between them.
 
 ```
-Planning Agent (Writer)
-    │── decomposes the topic, creates outline, writes final report
+Orchestrator Agent (Executor)
+    │── runs the plan step-by-step, classifies each step,
+    │   dispatches it to the right agent, and threads prior
+    │   outputs forward as shared context
     │
-Research Agent
-    │── queries arXiv, Tavily, and Wikipedia in parallel
-    │── returns structured results back to the planner
+    ├── Planner Agent
+    │     └── decomposes the topic into an atomic, executable
+    │         list of research steps (returned as a Python list)
     │
-Editor Agent
-    └── reflects on the draft, returns structured improvement feedback
+    ├── Research Agent
+    │     └── chooses between arXiv, Tavily, and Wikipedia via
+    │         OpenAI tool-calling and gathers external evidence
+    │
+    ├── Writer Agent
+    │     └── drafts the structured academic/technical content
+    │         from the research output
+    │
+    └── Editor Agent
+          └── reflects on the draft and returns critique /
+              revisions to lift quality
 ```
 
-The non-trivial part was designing agent handoffs — each agent receives only the context it needs, not the full conversation history. This keeps token usage predictable and prevents earlier agents from polluting later reasoning.
+The non-trivial part was the orchestrator: each plan step is classified into `{research, writer, editor}` via a constrained JSON response, then dispatched to the corresponding agent with only the accumulated history it needs — not the full conversation. That keeps token usage bounded as the plan grows and prevents earlier agents from polluting later reasoning.
 
 **Stack:** `aisuite`, `arxiv`, `tavily`, `wikipedia`, `python-dotenv`
 
