@@ -13,6 +13,19 @@ Three working AI systems that implement production-grade agentic design patterns
 
 An LLM that critiques and rewrites its own output in a closed loop — the core building block behind iterative agents.
 
+```
+        ┌──────────────┐
+topic ─▶│    Draft     │── initial essay ──┐
+        └──────────────┘                   │
+                                           ▼
+        ┌──────────────┐           ┌──────────────┐
+        │    Revise    │◀─ critique│   Reflect    │
+        └──────┬───────┘           └──────────────┘
+               │
+               ▼
+        revised essay
+```
+
 | Step | What happens |
 |---|---|
 | Draft | Model generates an initial essay from a topic prompt |
@@ -30,10 +43,33 @@ The interesting engineering challenge here is designing the reflection prompt so
 
 A research agent that decides *when* to call external tools, executes them, then reflects on the gathered information to produce a structured HTML report.
 
+```
+research question
+       │
+       ▼
+┌──────────────────┐   tool call    ┌──────────────────┐
+│  Research Agent  │───────────────▶│  arXiv / Tavily  │
+│                  │◀───────────────│  (function call) │
+└────────┬─────────┘   results      └──────────────────┘
+         │ draft report
+         ▼
+┌──────────────────┐
+│ Reflect & Revise │   (single step — critique + rewrite)
+└────────┬─────────┘
+         │ revised report
+         ▼
+┌──────────────────┐
+│   HTML Agent     │
+└────────┬─────────┘
+         │
+         ▼
+ HTML research report
+```
+
 - Wired **arXiv** and **Tavily** as callable tools via OpenAI's function-calling API
-- The agent autonomously decides which tool to use and how to query it based on the research question
-- A reflection step critiques the draft report and drives a second revision pass
-- Final output rendered as a styled, human-readable HTML report
+- The research agent autonomously decides which tool to use and how to query it based on the research question
+- The same agent then reflects on its own draft and revises it in a single follow-up pass
+- A dedicated HTML agent renders the final, styled, human-readable report
 
 The key design decision was keeping tool definitions narrow and typed — broad tool signatures caused the model to hallucinate arguments. Tight schemas eliminated that failure mode entirely.
 
