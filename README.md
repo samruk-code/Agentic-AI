@@ -34,7 +34,7 @@ topic ─▶│    Draft     │── initial essay ──┐
 
 The interesting engineering challenge here is designing the reflection prompt so it produces *actionable* critique rather than generic feedback — the quality of revision is entirely determined by the specificity of the reflection step.
 
-**Stack:** `aisuite`, `openai:gpt-4o`, `python-dotenv`
+**Stack:** `aisuite`, `openai:gpt-4o`
 
 ---
 
@@ -68,12 +68,12 @@ research question
 
 - Wired **arXiv** and **Tavily** as callable tools via OpenAI's function-calling API
 - The research agent autonomously decides which tool to use and how to query it based on the research question
-- The same agent then reflects on its own draft and revises it in a single follow-up pass
+- The same agent then reflects on research agent draft and revises it in a single follow-up pass
 - A dedicated HTML agent renders the final, styled, human-readable report
 
 The key design decision was keeping tool definitions narrow and typed — broad tool signatures caused the model to hallucinate arguments. Tight schemas eliminated that failure mode entirely.
 
-**Stack:** `openai` (tool-calling API), `arxiv`, `tavily`, `IPython.display`
+**Stack:** `openai` (tool-calling API), `arxiv`, `tavily`,
 
 ---
 
@@ -105,9 +105,9 @@ Orchestrator Agent (Executor)
               revisions to lift quality
 ```
 
-The non-trivial part was the orchestrator: each plan step is classified into `{research, writer, editor}` via a constrained JSON response, then dispatched to the corresponding agent with only the accumulated history it needs — not the full conversation. That keeps token usage bounded as the plan grows and prevents earlier agents from polluting later reasoning.
+The non-trivial part was the orchestrator: each plan step is classified into `{research, writer, editor}` via a constrained JSON response, then dispatched to the corresponding agent with the accumulated history.
 
-**Stack:** `aisuite`, `arxiv`, `tavily`, `wikipedia`, `python-dotenv`
+**Stack:** `aisuite`, `arxiv`, `tavily`, `wikipedia`
 
 ---
 
